@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
 import { addItem } from "./CartSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function ProductList() {
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
   const [addedToCart, setAddedToCart] = useState({});
+  const cart = useSelector((state) => state.cart.items);
 
+  const dispatch = useDispatch();
   const plantsArray = [
     {
       category: "Air Purifying Plants",
@@ -339,6 +342,21 @@ function ProductList() {
                     id="mainIconPathAttribute"
                   ></path>
                 </svg>
+                {cart.length > 0 && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      background: "red",
+                      color: "white",
+                      borderRadius: "50%",
+                      padding: "2px 6px",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {cart.length}
+                  </span>
+                )}
               </h1>
             </a>
           </div>
@@ -366,10 +384,19 @@ function ProductList() {
                     </div>
                     <div className="product-price">{plant.cost}</div>
                     <button
+                      style={{
+                        backgroundColor: cart.some(
+                          (item) => item.name === plant.name
+                        )
+                          ? "grey"
+                          : "",
+                      }}
                       className="product-button"
                       onClick={() => handleAddToCart(plant)}
                     >
-                      Add to Cart
+                      {cart.some((item) => item.name === plant.name)
+                        ? "Added To Cart"
+                        : "Add to Cart"}
                     </button>
                   </div>
                 ))}
